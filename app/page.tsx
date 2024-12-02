@@ -1,244 +1,183 @@
-"use client";
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Download, Github, Trello } from 'lucide-react'
+import { Card, CardContent } from "@/components/ui/card"
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Download, LogIn, Github, Trello } from "lucide-react";
-import { useEffect, useState } from "react";
-import { supabaseClient } from "@/lib/supabase/client";
-import { type User } from "@/types/User";
+import Action from "./(authentication)/login/Action"
 
-/**
- * App component
- * This is the main component for rendering the homepage
- * It manages user authentication and dynamically displays content
- * based on whether the user is logged in or not.
- */
-export default function App() {
-  const [user, setUser] = useState<User | null>(null); // State to store the authenticated user data
-  const [loading, setLoading] = useState(true); // Loading state to track when user data is being fetched
-
-  /**
-   * useEffect hook for fetching the authenticated user's data.
-   * Once the user is fetched from Supabase, it updates the user state
-   * and stops the loading indicator.
-   */
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabaseClient.auth.getUser(); // Fetch user data from Supabase
-      setUser(user); // Update the user state with fetched data
-      setLoading(false); // Stop loading state
-    };
-
-    fetchUser();
-  }, []);
-
-  // Determine the button text based on loading state and user's authentication status
-  const buttonText = loading ? "" : user ? "Abrir App" : "Iniciar sesión";
-
+export default function Home() {
   return (
-    <div className="bg-[#404EED] text-white flex flex-col min-h-screen">
-      {/* Navigation bar */}
-      <nav className="bg-[#404EED] py-4">
-        <div className="container mx-auto flex items-center justify-between px-6">
+    <div className="bg-neutral-900 text-white flex flex-col min-h-screen ">
+      <nav className="bg-neutral-950 py-4 sticky top-0 z-50">
+        <div className="container mx-auto flex items-center justify-between px-4 md:px-6">
           <Link href="/" className="text-2xl font-bold">
             Nestcord
           </Link>
-          {/* Desktop navigation links */}
           <div className="hidden md:flex space-x-6">
-            <Link href="/download" className="hover:underline">
-              Descargar
+            <Link href="/download" className="hover:text-indigo-600 transition-colors">
+              Download
             </Link>
-            <Link href="/people" className="hover:underline">
-              Descubrir
-            </Link>
-            <Link href="/security" className="hover:underline">
-              Seguridad
+            <Link href="/people" className="hover:text-indigo-600 transition-colors">
+              Discover
             </Link>
           </div>
-          {/* Conditional button to log in or open the app based on user's status */}
-          <Link href={loading ? "#" : user ? "/home" : "/login"}>
-            <Button
-              variant="secondary"
-              disabled={loading}
-              className="bg-white text-[#404EED] hover:bg-gray-200 hover:text-[#5865F2]"
-            >
-              {buttonText}
-            </Button>
-          </Link>
+          <Action />
         </div>
       </nav>
 
       <main className="flex-grow">
-        {/* Hero section */}
-        <section className="bg-[#404EED] py-32 relative overflow-hidden">
-          <div className="container mx-auto text-center px-6 relative z-10">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Conecta, Comparte y Explora Tu Entorno
+        <section className="bg-neutral-900 py-16 md:py-32 relative overflow-hidden">
+          <div className="container mx-auto text-center px-4 md:px-6 relative z-10">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Connect, Share, and Explore Your Environment
             </h1>
-            <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-              La red social donde puedes conectar con tus amigos. Publica tus
-              ideas, comparte tus momentos y explora perfiles para hacer nuevas
-              amistades. Únete a la comunidad que te permite expresarte y
-              mantenerte en contacto.
+            <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-neutral-300">
+              The social network where you can connect with your friends. Post your ideas, share your moments, and explore profiles to make new friendships. Join the community that allows you to express yourself and stay in touch.
             </p>
-            {/* Action buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-white text-[#404EED] hover:bg-gray-200 hover:text-[#5865F2]"
+                className="bg-blue-600 text-white hover:bg-blue-700"
               >
-                <Download className="mr-2 h-5 w-5" /> Descargar para Windows
+                <Download className="mr-2 h-5 w-5" /> Download for Windows
               </Button>
-              <Link href={loading ? "#" : user ? "/home" : "/login"}>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="bg-[#23272A] text-white hover:bg-[#2C2F33]"
-                >
-                  Abrir Nestcord en tu navegador
-                </Button>
-              </Link>
+              <Action />
             </div>
           </div>
-          {/* Decorative SVG wave shape */}
           <div className="absolute left-0 bottom-0 w-full">
-            <svg
-              className="w-full h-auto"
-              viewBox="0 0 1440 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V0Z"
-                fill="white"
-              />
-            </svg>
+          <svg
+  className="w-full h-auto"
+  viewBox="0 0 1440 100"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V100H0V0Z"
+    fill="#262626"
+  />
+</svg>
+
           </div>
         </section>
 
-        {/* Feature sections */}
-        <section className="py-20 bg-white text-[#23272A]">
-          <div className="container mx-auto px-6">
-            {/* Feature: Creating posts */}
-            <div className="flex flex-col md:flex-row items-center justify-between mb-20">
+        <section className="py-16 md:py-20 bg-neutral-800 text-white">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-16 md:mb-20">
               <div className="md:w-1/2 mb-10 md:mb-0">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Crea publicaciones
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">
+                  Create Posts
                 </h2>
-                <p className="text-lg">
-                  ¡Publica y comparte tus pensamientos en Nestcord! Deja que
-                  todos a tu alrededor descubran tus ideas, preguntas y momentos
-                  especiales. Conéctate con tu comunidad y observa cómo tus
-                  palabras pueden generar conversaciones y conexiones
-                  significativas.
+                <p className="text-lg text-neutral-300">
+                  Post and share your thoughts on Nestcord! Let everyone around you discover your ideas, questions, and special moments. Connect with your community and see how your words can generate meaningful conversations and connections.
                 </p>
               </div>
-              <div>
-                {/* Image showing a user post card */}
-                <Image
-                  src="/Post_Card.webp"
-                  alt="Nestcord User Post Card"
-                  width={580}
-                  height={580}
-                  className="rounded-lg shadow-lg"
-                  quality={100}
-                  priority={true}
-                />
+              <div className="md:w-1/2">
+                <Card className="bg-neutral-700 border-neutral-600">
+                  <CardContent className="p-0">
+                    <Image
+                      src="/Post_Card.webp"
+                      alt="Nestcord User Post Card"
+                      width={580}
+                      height={580}
+                      className="rounded-lg w-full h-auto"
+                      quality={100}
+                      priority={true}
+                    />
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
-            {/* Feature: Chat with friends */}
             <div className="flex flex-col md:flex-row-reverse items-center justify-between">
               <div className="md:w-1/2 mb-10 md:mb-0">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Habla con tus amigos
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">
+                  Chat with Your Friends
                 </h2>
-                <p className="text-lg">
-                  Puedes enviar mensajes a tus amigos a través de un chat
-                  cifrado y privado. Disfruta de conversaciones seguras, donde
-                  solo tú y tus amigos pueden acceder.
+                <p className="text-lg text-neutral-300">
+                  You can send messages to your friends through an encrypted and private chat. Enjoy secure conversations, where only you and your friends can access.
                 </p>
+              </div>
+              <div className="md:w-1/2">
+                <Card className="bg-neutral-700 border-neutral-600">
+                  <CardContent className="p-6">
+                    <div className="bg-neutral-800 rounded-lg p-4 mb-4">
+                      <p className="text-sm text-neutral-300">Hey, how's it going?</p>
+                    </div>
+                    <div className="bg-blue-600 rounded-lg p-4 mb-4 ml-auto max-w-[80%]">
+                      <p className="text-sm">Great! Just finished a new project. How about you?</p>
+                    </div>
+                    <div className="bg-neutral-800 rounded-lg p-4">
+                      <p className="text-sm text-neutral-300">That's awesome! I'd love to hear more about it.</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Call-to-action section */}
-        <section className="py-20 bg-[#F6F6F6] text-[#23272A]">
-          <div className="container mx-auto text-center px-6">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              ¡Empieza a explorar tu alrededor!
+        <section className="py-16 md:py-20 bg-neutral-900 text-white">
+          <div className="container mx-auto text-center px-4 md:px-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">
+              Start Exploring Your Surroundings!
             </h2>
-            <Link href={loading ? "#" : user ? "/home" : "/login"}>
-              <Button
-                size="lg"
-                className="bg-[#5865F2] hover:bg-[#4752C4] text-white"
-                disabled={loading}
-              >
-                <LogIn className="mr-2 h-5 w-5" /> {buttonText}
-              </Button>
-            </Link>
+            <Action />
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#23272A] text-white py-12">
-        <div className="container mx-auto px-6">
+      <footer className="bg-neutral-950 text-white py-12">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Brand section */}
             <div className="col-span-1 md:col-span-2">
-              <h3 className="text-[#5865F2] font-bold text-4xl mb-4">
+              <h3 className="text-blue-400 font-bold text-4xl mb-4">
                 NESTCORD
               </h3>
               <div className="flex space-x-4">
                 <a
                   href="https://github.com/nestcord"
-                  className="text-white hover:text-[#5865F2] transition-colors"
+                  className="text-white hover:text-blue-400 transition-colors"
                 >
                   <Github className="h-6 w-6" />
                 </a>
                 <a
                   href="https://trello.com/b/AsSQkCr8"
-                  className="text-white hover:text-[#5865F2] transition-colors"
+                  className="text-white hover:text-blue-400 transition-colors"
                 >
                   <Trello className="h-6 w-6" />
                 </a>
               </div>
             </div>
 
-            {/* Product section */}
             <div>
-              <h4 className="text-[#5865F2] font-semibold mb-4">Producto</h4>
+              <h4 className="text-blue-400 font-semibold mb-4">Product</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/download" className="hover:underline">
-                    Descargar
+                  <Link href="/download" className="hover:text-blue-400 transition-colors">
+                    Download
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Footer bottom links */}
-          <div className="mt-10 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
+          <div className="mt-10 pt-8 border-t border-neutral-700 flex flex-col md:flex-row justify-between items-center">
             <Link href="/" className="text-2xl font-bold mb-4 md:mb-0">
               Nestcord
             </Link>
             <div className="flex space-x-4">
-              <Link href="/terms" className="hover:underline">
-                Términos
+              <Link href="/terms" className="hover:text-blue-400 transition-colors">
+                Terms
               </Link>
-              <Link href="/privacy" className="hover:underline">
-                Privacidad
+              <Link href="/privacy" className="hover:text-blue-400 transition-colors">
+                Privacy
               </Link>
             </div>
           </div>
         </div>
       </footer>
     </div>
-  );
+  )
 }
+

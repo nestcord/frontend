@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 
-import "./globals.css";
-
 export const metadata: Metadata = {
-  title: "Nestcord - Explora y conoce lo que está pasando",
-  description: "Explora y conoce lo que está pasando",
+  title: "Nestcord | Friends",
   icons: {
     icon: "/favicon.webp",
   },
@@ -16,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-neutral-900 text-white">{children}</body>
     </html>
   );
 }
