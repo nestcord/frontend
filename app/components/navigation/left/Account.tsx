@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { User, Settings, LogOut, ChevronUp } from 'lucide-react';
+import { User, Settings, LogOut, ChevronUp } from "lucide-react";
 import Link from "next/link";
 
 import { UserTypes } from "@/controllers/client/useClient";
@@ -37,20 +37,52 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useSWR from "swr";
+import { UserPropierties } from "types/User";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Account({ user }: UserTypes) {
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { useTheme } from "next-themes";
+export default function Account() {
   const router = useRouter();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const handleToggle = (checked: boolean) => {
+    setTheme(checked ? "dark" : "light");
+  };
+  const id = localStorage.getItem("user_id_cache");
+
+  const fetchUser = async (url: string) => {
+    const response = await fetch(url);
+    return response.json();
+  };
+
+  const { data, isLoading } = useSWR(`/api/user?id=${id}`, fetchUser, {
+    revalidateOnFocus: false,
+    revalidateOnMount: true,
+  });
+  if (isLoading) {
+    return (
+      <section
+        className="fixed bottom-0 left-0 right-0 flex justify-center m-4"
+        id="profile-section"
+      >
+        <Avatar className="bg-neutral-800 h-10 w-10 cursor-pointer transition-transform duration-200 ease-in-out transform group-hover:scale-110">
+          <Skeleton />
+        </Avatar>
+      </section>
+    );
+  }
+
+  const user: UserPropierties = data.data[0];
 
   const handleLogout = async () => {
-    const { error } = await db.auth.signOut();
-    if (error) {
-      console.error("Error trying to log out:", error);
-    } else {
-      router.push("/");
-      console.log("[USER]:", user.id, "| Logged out");
-    }
+    await db.auth.signOut();
+
+    router.push("/");
   };
 
   return (
@@ -73,7 +105,9 @@ export default function Account({ user }: UserTypes) {
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
               <ChevronUp className="text-gray-500" size={20} />
             </div>
-            <span className="sr-only">Abrir menú de opciones de usuario</span>
+            <span className="sr-only">
+              Open user account configuration menu
+            </span>
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 p-2 rounded-lg bg-neutral-800 border-none ml-4">
@@ -82,6 +116,15 @@ export default function Account({ user }: UserTypes) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
+            <DropdownMenuItem className="cursor-pointer text-white">
+              <Switch
+                checked={theme === "dark"}
+                onCheckedChange={handleToggle}
+                id="theme-switch"
+              />
+              <span htmlFor="theme-switch">Switch Theme</span>
+              <span className="ml-auto text-xs text-muted-foreground">⌘P</span>
+            </DropdownMenuItem>
             <Link href={`/app/user/${user.user_name}`} passHref>
               <DropdownMenuItem className="cursor-pointer text-white">
                 <User className="mr-2 h-4 w-4" />
@@ -102,7 +145,9 @@ export default function Account({ user }: UserTypes) {
                 >
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
-                  <span className="ml-auto text-xs text-muted-foreground">⌘A</span>
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    ⌘A
+                  </span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent className="max-w-full max-h-full w-full h-full sm:w-[90%] sm:h-[90%] sm:max-w-[90%] sm:max-h-[90%] overflow-hidden bg-neutral-900 text-white">
@@ -113,7 +158,7 @@ export default function Account({ user }: UserTypes) {
                   </DialogDescription>
                 </DialogHeader>
                 <div className="h-[calc(100%-4rem)] overflow-hidden bg-neutral-950">
-                  <UserSettings />
+                  <UserSettings user={user} />
                 </div>
               </DialogContent>
             </Dialog>
@@ -154,4 +199,3 @@ export default function Account({ user }: UserTypes) {
     </section>
   );
 }
-

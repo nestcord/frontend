@@ -3,7 +3,6 @@
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 
-
 interface ComposePostButtonProps {
   content: string;
   attachment?: string | null; // Asegúrate de que attachment pueda ser string o null
@@ -17,7 +16,6 @@ export function ComposePostButton({
 
   // El botón se habilitará si hay contenido o un attachment
   const isButtonDisabled = pending || (content.length === 0 && !attachment);
-
 
   return (
     <Button

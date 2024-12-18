@@ -47,12 +47,14 @@ export default function SearchMenu() {
   }, [toggleOpen]);
 
   const { data, error, isLoading } = useSWR(
-    query.trim() ? `/api/users?query=${encodeURIComponent(query.trim())}` : null,
-    fetcher
+    query.trim()
+      ? `/api/users?query=${encodeURIComponent(query.trim())}`
+      : null,
+    fetcher,
   );
 
   const results = data?.users || [];
-  
+
   // Si hay un error en la petición, mostramos el mensaje
   if (error) {
     console.error("Error fetching users:", error);

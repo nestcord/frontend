@@ -1,33 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { useClient, UserTypes } from "@/controllers/client/useClient"
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useClient, UserTypes } from "@/controllers/client/useClient";
+import { UserPropierties } from "types/User";
 
-
-type User = UserTypes["user"];
-export default function UserSettings() {
-
-
-
-  const [activeTab, setActiveTab] = useState("account")
+export default function UserSettings({ user }: { user: UserPropierties }) {
+  const [activeTab, setActiveTab] = useState("account");
 
   return (
     <div className="min-h-scree">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-screen flex">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full h-screen flex"
+      >
         <div className="w-64 border-r border-neutral-800">
           <TabsList className="flex flex-col items-stretch h-full bg-neutral-900">
-            <TabsTrigger value="account" className="justify-start">My Account</TabsTrigger>
-            <TabsTrigger value="profile" className="justify-start">Profile</TabsTrigger>
-            <TabsTrigger value="privacy" className="justify-start">Privacy</TabsTrigger>
-            <TabsTrigger value="notifications" className="justify-start">Notifications</TabsTrigger>
+            <TabsTrigger value="account" className="justify-start">
+              My Account
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="justify-start">
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="privacy" className="justify-start">
+              Privacy
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="justify-start">
+              Notifications
+            </TabsTrigger>
           </TabsList>
         </div>
         <div className="flex-1 overflow-auto p-6">
@@ -46,15 +67,17 @@ export default function UserSettings() {
         </div>
       </Tabs>
     </div>
-  )
+  );
 }
 
-function AccountSettings({ user }: { user: UserTypes }) {
+function AccountSettings({ user }: { user: UserPropierties }) {
   return (
     <Card className="bg-neutral-950 text-white">
       <CardHeader>
         <CardTitle>Configuración de la cuenta</CardTitle>
-        <CardDescription>Administra la información de tu cuenta</CardDescription>
+        <CardDescription>
+          Administra la información de tu cuenta
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -81,10 +104,10 @@ function AccountSettings({ user }: { user: UserTypes }) {
         <Button>Guardar cambios</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
-function ProfileSettings({ user }: { user: UserTypes }) {
+function ProfileSettings({ user }: { user: UserPropierties }) {
   return (
     <Card className="bg-neutral-900">
       <CardHeader>
@@ -97,14 +120,18 @@ function ProfileSettings({ user }: { user: UserTypes }) {
         </div>
         <div className="space-y-2">
           <Label htmlFor="bio">Biografía</Label>
-          <Input id="bio" placeholder="Cuéntanos sobre ti" className="bg-neutral-800" />
+          <Input
+            id="bio"
+            placeholder="Cuéntanos sobre ti"
+            className="bg-neutral-800"
+          />
         </div>
       </CardContent>
       <CardFooter>
         <Button>Actualizar perfil</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function PrivacySettings() {
@@ -112,7 +139,9 @@ function PrivacySettings() {
     <Card className="bg-neutral-950">
       <CardHeader>
         <CardTitle>Privacidad y seguridad</CardTitle>
-        <CardDescription>Administra tu configuración de privacidad</CardDescription>
+        <CardDescription>
+          Administra tu configuración de privacidad
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
@@ -126,7 +155,7 @@ function PrivacySettings() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function NotificationSettings() {
@@ -134,7 +163,9 @@ function NotificationSettings() {
     <Card className="bg-neutral-900">
       <CardHeader>
         <CardTitle>Notificaciones</CardTitle>
-        <CardDescription>Configura tus preferencias de notificación</CardDescription>
+        <CardDescription>
+          Configura tus preferencias de notificación
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
@@ -148,6 +179,5 @@ function NotificationSettings() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

@@ -8,11 +8,11 @@ import { UserTypes } from "@/controllers/client/useClient";
 type User = UserTypes["user"];
 
 export default function Discover() {
-  const fetcher = async (url: string) => fetch(url).then(res => res.json());
+  const fetcher = async (url: string) => fetch(url).then((res) => res.json());
 
   const { data, isLoading } = useSWR<{ recommendations: User[] }>(
     "/api/users/recommendations",
-    fetcher
+    fetcher,
   );
 
   const recommendations = data?.recommendations || [];

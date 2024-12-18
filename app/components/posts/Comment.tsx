@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -23,21 +24,27 @@ import { UserTypes } from "@/controllers/client/useClient";
 
 import data from "@emoji-mart/data/sets/14/twitter.json";
 import Picker from "@emoji-mart/react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { UserPropierties } from "types/User";
 
 export default function Component({
   postId,
   postContent,
   authorName,
   authorUsername,
+  authorId,
   authorAvatar,
   user,
+  commentsCount,
 }: {
   postId: string;
   postContent: string;
   authorName: string;
   authorUsername: string;
+  authorId: string;
   authorAvatar: string;
-  user: UserTypes;
+  user: UserPropierties;
+  commentsCount: number;
 }) {
   const [comment, setComment] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -69,29 +76,34 @@ export default function Component({
     if (!comment.trim()) return;
 
     try {
-      console.log("Datos de comentario:", {
-        content: comment,
-        postId: postId,
-        user_id: user.user.id,
-      });
-
-      const { error } = await db.from("comments").insert([
+      await db.from("notifications").insert([
         {
-          content: comment,
-          postId: postId,
-          user_id: user.user.id,
+          sender_id: user.id, // ID of the user who sends the comment
+          user_id: authorId, // ID of the author of the post
+          message: `${user.name} has commented on your post`, // Message to display in the notification
+          avatar_url: user.avatar_url, // Avatar URL of the user who sends the comment
+          post_id: postId, // ID of the post related to the comment
         },
       ]);
 
-      if (error) {
-        console.error("Error en la inserción:", error);
-        return;
-      }
+      await db.from("comments").insert([
+        {
+          content: comment,
+          postId: postId,
+          user_id: user.id,
+        },
+      ]);
+
+      await db.rpc("insert_comment_and_update_count", {
+        content: comment,
+        post_id: postId,
+        user_id: user.id,
+      });
 
       setComment("");
       setIsOpen(false);
     } catch (error) {
-      console.error("Error al guardar el comentario:", error);
+      console.error("Error while commenting:", error);
     }
   };
 
@@ -103,12 +115,15 @@ export default function Component({
           size="icon"
           className="flex-1 text-white hover:bg-transparent hover:text-indigo-500"
         >
-          <MessageCircle className="w-4 h-4 mr-2" />
+          <MessageCircle className="w-4 h-4 mr-2" /> {commentsCount}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] bg-neutral-950 text-white border-none">
         <DialogHeader className="flex flex-row items-center justify-between border-b border-zinc-800 pb-2">
-          <span className="text-blue-400 text-sm font-medium">Drafts</span>
+          <DialogTitle className="text-blue-400 text-sm font-medium">
+            Drafts
+          </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <div className="flex items-start space-x-3 mb-8">
@@ -134,17 +149,17 @@ export default function Component({
           <div className="flex items-start space-x-3 mt-8">
             <Avatar className="w-10 h-10">
               <AvatarImage
-                src={user.user.avatar_url ?? ""}
-                alt={user.user.name || "Usuario"}
+                src={user.avatar_url ?? ""}
+                alt={user.name || "Usuario"}
               />
               <AvatarFallback>
-                {user.user.name
-                  ? user.user.name.slice(0, 2).toUpperCase()
-                  : "UI"}
+                {user.name ? user.name.slice(0, 2).toUpperCase() : "UI"}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <Textarea
+                name="comment"
+                id="comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Comment the post"

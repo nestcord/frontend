@@ -34,6 +34,16 @@ export interface User {
   user_metadata: UserMetadata;
 }
 
+export interface UserPropierties {
+  id: string;
+  email?: string;
+  name: string;
+  user_name: string;
+  avatar_url: string;
+  created_at: string;
+  auth_id: string;
+}
+
 /**
  * Represents the app metadata of a user.
  * @interface UserAppMetadata

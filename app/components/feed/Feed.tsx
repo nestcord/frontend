@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ComposePost } from "./Compose";
 import Posts from "./Posts";
-import { UserTypes } from "@/controllers/client/useClient";
+import { UserPropierties } from "types/User";
 
 function ComposePostSkeleton() {
   return (
@@ -33,26 +33,16 @@ export function PostsSkeleton() {
   );
 }
 
-export default function Feed({ user }: UserTypes) {
+export default function PostsFeed({ user }: { user: UserPropierties }) {
   return (
-    <>
-      <PostsFeed user={user} />
-    </>
-  );
-}
+    <section className="flex flex-col items-center justify-center absolute inset-x-0 top-0">
+      <Suspense fallback={<ComposePostSkeleton />}>
+        <ComposePost user={user} />
+      </Suspense>
 
-function PostsFeed({ user }: UserTypes) {
-  return (
-    <>
-      <section className="flex flex-col items-center justify-center absolute inset-x-0 top-0 bg-neutral-900">
-        <Suspense fallback={<ComposePostSkeleton />}>
-          <ComposePost user={user} />
-        </Suspense>
-
-        <Suspense fallback={<PostsSkeleton />}>
+      <Suspense fallback={<PostsSkeleton />}>
         <Posts user={user} />
-        </Suspense>
-      </section>
-    </>
+      </Suspense>
+    </section>
   );
 }

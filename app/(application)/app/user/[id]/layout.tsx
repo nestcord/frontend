@@ -12,19 +12,17 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-    const data = await useClient();
-    let user: UserTypes["user"] = data.user;
+  const data = await useClient();
+  let user: UserTypes["user"] = data.user;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body>
         <main>
-            {children}
-            <UserSideNav user={user} />
-
-            </main>
+          {children}
+          <UserSideNav user={user} />
+        </main>
         <Toaster />
       </body>
     </html>

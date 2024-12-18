@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
-import "./globals.css";
+import "./main.css";
 
 export const metadata: Metadata = {
-  title: "Nestcord - Explora y conoce lo que está pasando",
-  description: "Explora y conoce lo que está pasando",
+  title: "Nestcord - Explore arround the world",
+  description: "Explore and discover what's happening around the world",
   icons: {
     icon: "/favicon.webp",
   },

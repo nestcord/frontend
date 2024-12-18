@@ -36,6 +36,9 @@ export const updateSession = async (request: NextRequest) => {
     const user = await supabase.auth.getUser();
 
     // protected routes
+  
+    response.headers.set("x-user-id-cache", user.data.user?.id ?? "null");
+
     if (request.nextUrl.pathname.startsWith("/app") && user.error) {
       return NextResponse.redirect(new URL("/login", request.url));
     }

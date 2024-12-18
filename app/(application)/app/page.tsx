@@ -1,30 +1,47 @@
+"use client";
+
 import dynamic from "next/dynamic";
+import useSWR from "swr";
 
-import { useClient, UserTypes } from "@/controllers/client/useClient";
+import { UserPropierties } from "types/User";
 
-const Feed = dynamic(() => import("@/components/feed/Feed"), {
-  ssr: false,
-});
+const PostsFeed = dynamic(() => import("@/components/feed/Feed"));
 
-const DiscoverSideNav = dynamic(() => import("@/components/navigation/right/SideNav"), {
-  ssr: false,
-})
+const DiscoverSideNav = dynamic(
+  () => import("@/components/navigation/right/SideNav"),
+  {
+    ssr: false,
+  },
+);
 
+const UserSideNav = dynamic(
+  () => import("@/components/navigation/left/SideNav"),
+);
 
-import UserSideNav from "@/components/navigation/left/SideNav";
+export default function App() {
+  const id = localStorage.getItem("user_id_cache");
 
-export default async function App() {
-  // Fetch user data using the useClient hook
-  const data = await useClient();
-  let user: UserTypes["user"] = data.user;
+  const fetchUser = async (url: string) => {
+    const response = await fetch(url);
+    return response.json();
+  };
+
+  const { data, isLoading } = useSWR(`/api/user?id=${id}`, fetchUser, {
+    revalidateOnFocus: false,
+    revalidateOnMount: true,
+  });
+
+  if (isLoading) return null;
+
+  const user: UserPropierties = data.data[0];
+
+  console.log(user.id, user.user_name)
 
   return (
-    <div className="bg-neutral-900">
+    <main className="dark:bg-neutral-900 dark:text-white bg-neutral-50 text-black">
       <UserSideNav user={user} />
-
-      <Feed user={user} />
-
+      <PostsFeed user={user} />
       <DiscoverSideNav />
-    </div>
+    </main>
   );
 }

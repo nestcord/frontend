@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Nestcord | Friends",
+  title: "Friends | Nestcord",
   icons: {
     icon: "/favicon.webp",
   },
@@ -14,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-neutral-900 text-white">{children}</body>
+      <body className="bg-neutral-900 text-white">
+        <main>{children}</main>
+      </body>
     </html>
   );
 }

@@ -20,7 +20,6 @@ export async function GET(req: Request) {
       );
     }
 
-
     // Retorno exitoso
     return Response.json({ users: data }, { status: 200 });
   } catch (error) {
