@@ -10,4 +10,4 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 // Create a Supabase client instance using the defined URL and anonymous key.
 // This client can be used to interact with the Supabase backend services.
 export const createClient = createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-export const db =  createClient
+export const db =  createClient;

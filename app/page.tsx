@@ -1,10 +1,10 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Download, Github, Trello } from 'lucide-react'
-import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Download, Github, Trello } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
-import Action from "./(authentication)/login/Action"
+import Action from "./(authentication)/login/Action";
 
 export default function Home() {
   return (
@@ -15,10 +15,16 @@ export default function Home() {
             Nestcord
           </Link>
           <div className="hidden md:flex space-x-6">
-            <Link href="/download" className="hover:text-indigo-600 transition-colors">
+            <Link
+              href="/download"
+              className="hover:text-indigo-600 transition-colors"
+            >
               Download
             </Link>
-            <Link href="/people" className="hover:text-indigo-600 transition-colors">
+            <Link
+              href="/people"
+              className="hover:text-indigo-600 transition-colors"
+            >
               Discover
             </Link>
           </div>
@@ -33,7 +39,10 @@ export default function Home() {
               Connect, Share, and Explore Your Environment
             </h1>
             <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-neutral-300">
-              The social network where you can connect with your friends. Post your ideas, share your moments, and explore profiles to make new friendships. Join the community that allows you to express yourself and stay in touch.
+              The social network where you can connect with your friends. Post
+              your ideas, share your moments, and explore profiles to make new
+              friendships. Join the community that allows you to express
+              yourself and stay in touch.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
@@ -46,18 +55,17 @@ export default function Home() {
             </div>
           </div>
           <div className="absolute left-0 bottom-0 w-full">
-          <svg
-  className="w-full h-auto"
-  viewBox="0 0 1440 100"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V100H0V0Z"
-    fill="#262626"
-  />
-</svg>
-
+            <svg
+              className="w-full h-auto"
+              viewBox="0 0 1440 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V100H0V0Z"
+                fill="#262626"
+              />
+            </svg>
           </div>
         </section>
 
@@ -69,7 +77,10 @@ export default function Home() {
                   Create Posts
                 </h2>
                 <p className="text-lg text-neutral-300">
-                  Post and share your thoughts on Nestcord! Let everyone around you discover your ideas, questions, and special moments. Connect with your community and see how your words can generate meaningful conversations and connections.
+                  Post and share your thoughts on Nestcord! Let everyone around
+                  you discover your ideas, questions, and special moments.
+                  Connect with your community and see how your words can
+                  generate meaningful conversations and connections.
                 </p>
               </div>
               <div className="md:w-1/2">
@@ -95,20 +106,28 @@ export default function Home() {
                   Chat with Your Friends
                 </h2>
                 <p className="text-lg text-neutral-300">
-                  You can send messages to your friends through an encrypted and private chat. Enjoy secure conversations, where only you and your friends can access.
+                  You can send messages to your friends through an encrypted and
+                  private chat. Enjoy secure conversations, where only you and
+                  your friends can access.
                 </p>
               </div>
               <div className="md:w-1/2">
                 <Card className="bg-neutral-700 border-neutral-600">
                   <CardContent className="p-6">
                     <div className="bg-neutral-800 rounded-lg p-4 mb-4">
-                      <p className="text-sm text-neutral-300">Hey, how's it going?</p>
+                      <p className="text-sm text-neutral-300">
+                        Hey, how's it going?
+                      </p>
                     </div>
                     <div className="bg-blue-600 rounded-lg p-4 mb-4 ml-auto max-w-[80%]">
-                      <p className="text-sm">Great! Just finished a new project. How about you?</p>
+                      <p className="text-sm">
+                        Great! Just finished a new project. How about you?
+                      </p>
                     </div>
                     <div className="bg-neutral-800 rounded-lg p-4">
-                      <p className="text-sm text-neutral-300">That's awesome! I'd love to hear more about it.</p>
+                      <p className="text-sm text-neutral-300">
+                        That's awesome! I'd love to hear more about it.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -154,7 +173,10 @@ export default function Home() {
               <h4 className="text-blue-400 font-semibold mb-4">Product</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/download" className="hover:text-blue-400 transition-colors">
+                  <Link
+                    href="/download"
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     Download
                   </Link>
                 </li>
@@ -167,10 +189,16 @@ export default function Home() {
               Nestcord
             </Link>
             <div className="flex space-x-4">
-              <Link href="/terms" className="hover:text-blue-400 transition-colors">
+              <Link
+                href="/terms"
+                className="hover:text-blue-400 transition-colors"
+              >
                 Terms
               </Link>
-              <Link href="/privacy" className="hover:text-blue-400 transition-colors">
+              <Link
+                href="/privacy"
+                className="hover:text-blue-400 transition-colors"
+              >
                 Privacy
               </Link>
             </div>
@@ -178,6 +206,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
-

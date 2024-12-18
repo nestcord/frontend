@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "@/controllers/client/server";
 
 /**
@@ -6,7 +7,6 @@ import { createClient } from "@/controllers/client/server";
  *
  * This function exchanges an authorization code for a session using Supabase
  * and redirects the user based on their profile status.
- *
  */
 export async function GET(request: NextRequest) {
   // Extract the query parameters and origin URL from the request
@@ -44,13 +44,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}/auth/auth-code-error`);
       }
 
-      // If the user's username is null, redirect them to the registration completion page
-      if (!userProfile || userProfile.user_name === null) {
-        return NextResponse.redirect(`${origin}/register/complete`);
-      }
+      const response = NextResponse.redirect(
+        userProfile?.user_name === null
+          ? `${origin}/register/complete`
+          : `${origin}/app`,
+      );
 
-      // If the username is set, redirect the user to the home page
-      return NextResponse.redirect(`${origin}/app`);
+      return response;
     }
   }
 

@@ -18,7 +18,7 @@ export default function DiscoverSideNav() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
+    <nav>
       <Button
         variant="ghost"
         size="icon"
@@ -37,6 +37,6 @@ export default function DiscoverSideNav() {
         </div>
       </div>
       <div className="hidden md:block fixed top-4 right-4 z-50"></div>
-    </>
+    </nav>
   );
 }

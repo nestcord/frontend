@@ -10,7 +10,6 @@ import { db } from "@/controllers/client/client";
 
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data/sets/14/twitter.json";
-
 import {
   Tooltip,
   TooltipContent,
@@ -27,9 +26,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { addPost } from "../actions/Publish";
+import { addPost } from "../../../components/actions/Publish";
+import { UserPropierties } from "types/User";
 
-export function ComposePost({ user }: UserTypes) {
+export function ComposePost({ user }: { user: UserPropierties }) {
   const formRef = useRef<HTMLFormElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null); // Ref para el picker de emojis
 
@@ -79,9 +79,8 @@ export function ComposePost({ user }: UserTypes) {
       // Sube el archivo al bucket "attachments"
       const { data, error } = await db.storage
         .from("attachments")
-        .upload(uniqueFileName, attachment)
+        .upload(uniqueFileName, attachment);
 
-      
       if (error) {
         console.error("Error uploading attachment:", error.message);
         return;

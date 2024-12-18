@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useTransition } from "react";
 import useSWRInfinite from "swr/infinite";
 import {
   Card,
@@ -8,33 +8,43 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { PostsSkeleton } from "./Feed";
-import { UserTypes } from "@/controllers/client/useClient";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 import Comment from "../posts/Comment";
-import { Heart, Share, ClipboardCheck } from "lucide-react";
+import { Eye, Heart, Share, ClipboardCheck } from "lucide-react";
 import PostSettings from "../posts/Settings";
 
 import { useToast } from "@/hooks/use-toast";
+import { UserPropierties } from "types/User";
+import { updateLikes } from "../actions/Like";
 
 export interface Post {
   id: string;
+  author_id: string;
   content: string;
-  user_id: string;
+  attachment: string;
+  comments: number;
+  likes: number;
+  views: number;
+  created_at: string;
+  updated_at: string;
   user: {
     name: string;
     user_name: string;
     avatar_url: string;
     created_at: string;
+    id: string;
+    auth_id: string;
   };
-  likes: number;
-  created_at: string;
-  attachment: string;
 }
 
 const fetchPosts = async (url: string): Promise<{ posts: Post[] }> => {
@@ -42,13 +52,13 @@ const fetchPosts = async (url: string): Promise<{ posts: Post[] }> => {
   return res.json();
 };
 
-export default function Posts({ user }: UserTypes ) {
-  const { toast } = useToast()
+export default function Posts({ user }: { user: UserPropierties }) {
+  const { toast } = useToast();
 
   // Paginación usando SWR Infinite
-  const { data, size, setSize, isValidating, error } = useSWRInfinite(
-    (index) => `http://localhost:3000/api/posts/fetch?page=${index + 1}`,
-    fetchPosts
+  const { data, size, setSize, isValidating, error, mutate } = useSWRInfinite(
+    (index) => `/api/posts/fetch?page=${index + 1}`,
+    fetchPosts,
   );
 
   const posts = data ? data.flatMap((page) => page.posts) : [];
@@ -67,13 +77,13 @@ export default function Posts({ user }: UserTypes ) {
               setSize((prev) => prev + 1);
             }
           },
-          { threshold: 1 }
+          { threshold: 1 },
         );
         observer.observe(node);
         observerRef.current = observer;
       }
     },
-    [hasMore, isValidating, setSize]
+    [hasMore, isValidating, setSize],
   );
 
   useEffect(() => {
@@ -83,25 +93,31 @@ export default function Posts({ user }: UserTypes ) {
   }, []);
 
   if (error) {
-    return <p className="text-center text-red-500">Error al cargar publicaciones.</p>;
+    return (
+      <p className="text-center text-red-500">Error al cargar publicaciones.</p>
+    );
   }
 
   if (!data) {
     return <PostsSkeleton />;
   }
 
+
+
   return (
-    <section className="w-full max-w-2xl mx-auto px-4 py-8 space-y-6 bg-background text-foreground">
+    <section className="w-full max-w-2xl mx-auto px-4 py-8 space-y-6 bg-background text-foreground transition-colors duration-300">
       {posts?.map((post: Post) => (
         <Card
           key={post.id}
-          className="w-full bg-neutral-950 text-white transition-all duration-300 border border-transparent hover:border-primary hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:-translate-y-1"
+          className="w-full bg-background text-foreground border border-border transition-all duration-300 hover:border-primary hover:shadow-lg dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:-translate-y-1
+        dark:bg-neutral-950 dark:text-white bg-white text-black"
         >
           <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pb-2">
             <Avatar className="h-12 w-12 border-2 border-primary transition-transform group-hover:scale-105">
               <AvatarImage
                 src={post.user.avatar_url ?? ""}
-                alt={post.user.name || "Usuario"} />
+                alt={post.user.name || "Usuario"}
+              />
               <AvatarFallback>
                 {post.user.name
                   ? post.user.name.slice(0, 2).toUpperCase()
@@ -117,61 +133,62 @@ export default function Posts({ user }: UserTypes ) {
                         <p className="text-sm sm:text-base">
                           <Link
                             href={"/app/user/" + post.user.user_name}
-                          className="hover:underline transition-colors font-semibold"
+                            className="hover:underline transition-colors font-semibold"
                           >
+                            {post.user.name}
+                          </Link>{" "}
+                          ·{" "}
+                          <span className="text-gray-400">
+                            @{post.user.user_name}
+                          </span>
+                        </p>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 dark:bg-neutral-950 dark:text-white bg-neutral-50 text-black">
+                      <div className="flex justify-between space-x-4">
+                        <Avatar className="h-16 w-16 border-2 border-primary">
+                          <AvatarImage src={post.user.avatar_url} />
+                          <AvatarFallback>
+                            {post.user.name.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <Button variant="outline" className="ml-auto">
+                          Follow
+                        </Button>
+                      </div>
+                      <div className="space-y-1 mt-4">
+                        <h4 className="text-lg font-semibold text-white dark:text-black">
                           {post.user.name}
-                        </Link>{" "}
-                        ·{" "}
-                        <span className="text-gray-400">
+                        </h4>
+                        <p className="text-sm text-gray-400">
                           @{post.user.user_name}
-                        </span>
-                      </p>
-                    </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80 bg-gray-900 text-white">
-                    <div className="flex justify-between space-x-4">
-                      <Avatar className="h-16 w-16 border-2 border-primary">
-                        <AvatarImage src={post.user.avatar_url} />
-                        <AvatarFallback>
-                          {post.user.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <Button variant="outline" className="ml-auto">
-                        Follow
-                      </Button>
-                    </div>
-                    <div className="space-y-1 mt-4">
-                      <h4 className="text-lg font-semibold text-white">
-                        {post.user.name}
-                      </h4>
-                      <p className="text-sm text-gray-400">
-                        @{post.user.user_name}
-                      </p>
-                    </div>
-                    <p className="text-sm mt-2">
-                      {post.user.name || "No bio available"}
-                    </p>
-                    <div className="flex items-center space-x-4 mt-4 text-sm text-gray-400">
-                      <div>
-                        <span className="font-semibold text-white"></span>{" "}
-                        Following
+                        </p>
                       </div>
-                      <div>
-                        <span className="font-semibold text-white"></span>{" "}
-                        Followers
+                      <p className="text-sm mt-2">
+                        {post.user.name || "No bio available"}
+                      </p>
+                      <div className="flex items-center space-x-4 mt-4 text-sm text-gray-400">
+                        <div>
+                          <span className="font-semibold text-white"></span>{" "}
+                          Following
+                        </div>
+                        <div>
+                          <span className="font-semibold text-white"></span>{" "}
+                          Followers
+                        </div>
                       </div>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
+                <p className="text-xs text-gray-400 mt-1 sm:mt-0">
+                  {formatDistanceToNow(new Date(post.created_at), {
+                    addSuffix: true,
+                  })}
+                </p>
               </div>
-              <p className="text-xs text-gray-400 mt-1 sm:mt-0">
-                {formatDistanceToNow(new Date(post.created_at), {
-                  addSuffix: true,
-                })}
-              </p>
             </div>
-          </div>
-        </CardHeader><CardContent className="group-hover:bg-neutral-900 transition-colors">
+          </CardHeader>
+          <CardContent>
             {post.content && (
               <p className="text-base leading-relaxed mb-4">{post.content}</p>
             )}
@@ -181,25 +198,30 @@ export default function Posts({ user }: UserTypes ) {
                 <Image
                   src={post.attachment}
                   alt={post.user.name + "'s post"}
-                width={500}
-                height={500}
-                className="rounded-lg w-auto h-auto"
+                  width={500}
+                  height={500}
+                  className="rounded-lg w-auto h-auto"
                 />
               </div>
             )}
-          </CardContent><CardFooter className="flex flex-wrap justify-between border-t border-gray-800 pt-4">
-            <div className="flex space-x-2 w-full sm:w-auto mb-2 sm:mb-0">
+          </CardContent>
+          <CardFooter className="flex items-center justify-between border-t border-gray-800 pt-4">
+            <div className="flex space-x-2">
               <Comment
-                user={{ user }}
+                user={user}
                 postId={post.id}
                 postContent={post.content}
                 authorName={post.user.name}
                 authorUsername={post.user.user_name}
-                authorAvatar={post.user.avatar_url} />
+                authorId={post.user.id}
+                authorAvatar={post.user.avatar_url}
+                commentsCount={post.comments}
+              />
               <Button
+                onClick={ async () => await updateLikes({ id: post.id, user_id: user.id })}
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-transparent hover:text-indigo-500"
+                className="text-muted-foreground hover:text-primary"
               >
                 <Heart className="w-4 h-4 mr-2" />
                 <span className="text-sm">{post.likes || 0}</span>
@@ -207,7 +229,7 @@ export default function Posts({ user }: UserTypes ) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-transparent hover:text-indigo-500"
+                className="text-muted-foreground hover:text-primary"
                 onClick={() => {
                   toast({
                     style: {
@@ -217,9 +239,11 @@ export default function Posts({ user }: UserTypes ) {
                       borderRadius: "0.5rem",
                     },
                     description: "Copied to clipboard",
-                    duration: 1000
-                  }); 
-                  navigator.clipboard.writeText(window.location.href + "/status/" + post.id);
+                    duration: 1000,
+                  });
+                  navigator.clipboard.writeText(
+                    window.location.href + "/status/" + post.id,
+                  );
                 }}
               >
                 <Share className="w-4 h-4 mr-2" />
@@ -227,17 +251,32 @@ export default function Posts({ user }: UserTypes ) {
               </Button>
             </div>
 
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto text-muted-foreground hover:text-primary"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              <span className="text-sm">{post.views || 0} views</span>
+            </Button>
+
             <PostSettings
               authorUsername={post.user.user_name}
               postId={post.id}
-              authorId={post.user_id}
-              userId={user.id} />
+              authorId={post.user.id}
+              userId={user.id}
+            />
           </CardFooter>
         </Card>
       ))}
-      {isValidating && hasMore && <p className="text-center text-gray-400">Cargando más publicaciones...</p>}
-{!hasMore && <p className="text-center text-gray-400">No hay más publicaciones.</p>}
-
+      {isValidating && hasMore && (
+        <p className="text-center text-gray-400">
+          Cargando más publicaciones...
+        </p>
+      )}
+      {!hasMore && (
+        <p className="text-center text-gray-400">No hay más publicaciones.</p>
+      )}
     </section>
   );
 }

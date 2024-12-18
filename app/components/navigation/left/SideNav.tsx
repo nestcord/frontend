@@ -11,11 +11,9 @@ import { Button } from "@/components/ui/button";
 
 import Account from "@/components/navigation/left/Account";
 
-import { UserTypes } from "@/controllers/client/useClient";
+import { UserPropierties } from "types/User";
 
-export default function UserSideNav({ user }: UserTypes) {
-
-  
+export default function UserSideNav({ user }: { user: UserPropierties }) {
   const userNavigation = [
     { id: "/app/channels/@me", icon: AtSign, label: "Direct Messages" },
     { id: "/app", icon: Home, label: "Home" },
@@ -32,7 +30,6 @@ export default function UserSideNav({ user }: UserTypes) {
       setActiveChannel(channel);
     }
   }, [channel]);
-  
 
   if (isMobile) {
     return (
@@ -105,7 +102,7 @@ export default function UserSideNav({ user }: UserTypes) {
             </Button>
           ))}
         </nav>
-        <Account user={user} />
+        <Account />
       </aside>
     </div>
   );

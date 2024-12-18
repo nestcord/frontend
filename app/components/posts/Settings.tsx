@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Trash, Flag, UserPlus, Delete } from 'lucide-react';
+import { MoreHorizontal, Trash, Flag, UserPlus, Delete } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,10 +12,10 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import useSWR from 'swr';
+import useSWR from "swr";
 
-import { useToast } from '@/hooks/use-toast';
-import { revalidatePath } from 'next/cache';
+import { useToast } from "@/hooks/use-toast";
+import { revalidatePath } from "next/cache";
 
 export default function PostSettings({
   authorUsername,
@@ -32,13 +32,15 @@ export default function PostSettings({
   const [isOpen, setIsOpen] = useState(false);
 
   const { data, mutate } = useSWR("/api/post/fetch");
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const deletePost = async () => {
     try {
-      await fetch(`/api/posts/${postId}/delete`, { method: "POST", }).then(() => {
-        router.refresh();
-      })
+      await fetch(`/api/posts/${postId}/delete`, { method: "POST" }).then(
+        () => {
+          router.refresh();
+        },
+      );
 
       toast({
         title: "Post deleted",
@@ -46,7 +48,6 @@ export default function PostSettings({
         duration: 2000,
         variant: "destructive",
       });
-
     } catch (error) {
       toast({
         title: "Error",
@@ -55,7 +56,7 @@ export default function PostSettings({
         variant: "destructive",
       });
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -81,7 +82,7 @@ export default function PostSettings({
           >
             <DropdownMenuItem className="flex items-center px-3 py-2 text-sm hover:bg-neutral-800 cursor-pointer transition-colors duration-200">
               <UserPlus className="mr-3 h-4 w-4 text-indigo-400" />
-              Follow <span className='font-semibold'>@{authorUsername}</span>
+              Follow <span className="font-semibold">@{authorUsername}</span>
             </DropdownMenuItem>
             {userId === authorId && (
               <>
@@ -91,10 +92,8 @@ export default function PostSettings({
                   onClick={deletePost}
                   className="flex items-center px-3 py-2 text-sm text-red-400 hover:bg-red-900/30 cursor-pointer transition-colors duration-200"
                 >
-
                   <Trash className="mr-3 h-4 w-4" />
-                    <span>Delete Post</span>
-
+                  <span>Delete Post</span>
                 </DropdownMenuItem>
               </>
             )}
@@ -109,4 +108,3 @@ export default function PostSettings({
     </div>
   );
 }
-
